@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- cdn for bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- cdn link for axios-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <title>Employees Details</title>
+    <style>
+        *{
+            box-sizing: border-box;
+            margin: 0px;
+            padding: 0px;
+        }
+        .wrapper{
+            width: 100%;
+            height: auto;
+        }
+        #table-container{
+            overflow: scroll;
+            height: 600px;
+        }
+        .header{
+            padding: 0px;
+            margin: -30px 0px;
+        }
+        .jumbotron{
+            padding: 45px;
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="wrapper">
+        <div class="container jumbotron">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="header">
+                        <h1 class="text-center text-success">Employees Details</h1>
+                        <button id="myButton" class="btn bg-secondary text-white">Log Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main body Section -->
+    <div class="wrapper">
+        <div class="container jumbotron">
+            <div id="table-container"></div>
+        </div>
+    </div>
+
+    <!-- Javascript -->
+    <script>
+        // data variable contains all data
+        var data;
+        var promise = axios.get('http://dummy.restapiexample.com/api/v1/employees');
+        //console.log(promise);
+        promise.then(value => {
+            var tempData = value.data;
+            //data stored in a global variable 'data'
+            data = tempData;
+            createTable(data);
+        }).catch(err => alert(err));
+
+        //Dynamic Table creation
+        var p1 = document.getElementById('table-container');
+        function createTable(data){
+            var table = document.createElement('table');
+            for (let i = 0; i < 100; i++){
+                var tr = document.createElement('tr');   
+                var keys = Object.keys(data[i]);
+                for(let j = 0; j<keys.length; j++){
+                    var td = document.createElement('td');
+                    var text = document.createTextNode(data[i][keys[j]]);
+                    td.style.border = 'solid 1px black';
+                    td.style.padding = "8px 30px";
+                    td.style.textAlign = 'center';
+                    td.appendChild(text);
+                    tr.appendChild(td);
+                }
+                table.appendChild(tr);
+            }
+            table.style.border = 'solid 1px black';
+            table.style.borderCollapse = "collapse";
+            table.style.margin = "0px auto";
+            table.style.backgroundColor = "gray";
+            table.style.color = "white";
+            p1.appendChild(table);
+        }
+
+        //Infinite Scroll
+        p1.addEventListener('scroll', function(){
+            if (p1.scrollTop + p1.clientHeight >= p1.scrollHeight) {
+                createTable(data);
+            }
+        });
+
+        //Logout button functionalities
+        document.getElementById('myButton').onclick = function(){
+            location.href = "login.html";
+        }
+    </script>
+</body>
+</html>
